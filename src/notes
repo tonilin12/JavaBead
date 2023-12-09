@@ -1,0 +1,45 @@
+    Supplier<IntStream>amountLambda=()->{
+        var seged= IntStream.generate(() ->
+                rand.nextInt(21) - 10);
+        return IntStream.concat(IntStream.of(2,-2), seged);
+    };
+    Supplier<Stream<String>>contentLambda=()->{
+        var seged=Stream.generate(()->
+                generateRandomString());
+        return Stream.concat(Stream.of("a","b"),seged);
+    };
+    private static String generateRandomString() {
+        String characters =
+                "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+                        "abcdefghijklmnopqrstuvwxyz" +
+                        "0123456789";
+        StringBuilder stringBuilder = new StringBuilder();
+
+        int length=rand.nextInt(1,6);
+        for (int i = 0; i < length; i++) {
+            int randomIndex = rand.nextInt(characters.length());
+            char randomChar = characters.charAt(randomIndex);
+            stringBuilder.append(randomChar);
+        }
+        return stringBuilder.toString();
+    }
+
+        public static <T>BiFunction<
+                Function<T, Supplier<Stream<T>>>
+                ,Function<T, Supplier<Stream<T>>>
+                ,Stream<T>>
+        oneFromEach(T appendValue1,T appendValue2)
+        {
+            BiFunction<
+                    Function<T, Supplier<Stream<T>>>
+                    ,Function<T, Supplier<Stream<T>>>
+                    ,Stream<T>>
+                    result=(lambda1,lambda2)->{
+                Stream<T> v1=lambda1.apply(appendValue1).get();
+                Stream<T> v2=lambda2.apply(appendValue2).get();
+                BiFunction<Stream<T>,Stream<T>,Stream<T>>
+                        segedlambda=Utility.createStreamMerger();
+                return segedlambda.apply(v1,v2);
+            };
+            return result;
+        }
